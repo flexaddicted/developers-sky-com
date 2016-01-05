@@ -177,4 +177,4 @@ But wait. There is also more. If you need to notify the user interface, for exam
 	[completionOperation addDependency:downloadOperation];
 	[completionOperation addDependency:parsingOperation];
 
-That's all for me! Anyway, if you want to understand more of NSOperations I strongly suggest to watch the [Advanced NSOperations](https://developer.apple.com/videos/play/wwdc2015-226/) talk at WWDC 2015.
+That's all for me! Anyway, if you want to understand more of `NSOperation`s I strongly suggest to watch the [Advanced NSOperations](https://developer.apple.com/videos/play/wwdc2015-226/) talk at WWDC 2015.
