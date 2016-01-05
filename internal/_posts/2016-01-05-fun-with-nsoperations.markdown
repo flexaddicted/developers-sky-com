@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Having fun with NSOperations"
+title:  "Having fun with NSOperations in iOS"
 date:   2016-01-05 11:40:00
 author: Lorenzo Boaro
 categories: ios
@@ -8,23 +8,23 @@ image: /images/blogs/lb-train-tracks.jpg
 excerpt: "Leverage the powerful of NSOperations"
 ---
 
-I really like how `NSOperation`s work. I used them a lot during my previous development and I will continue to use them.
+Keeping your app responsive could be a very challenging task. If you are performing long running operations in the main thread you could end up with a sluggish and unresponsive user interface. In iOS a powerful way to move work off the main thread can be achieved through [`NSOperation`](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/NSOperation_class/) and [`NSOperationQueue`](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/NSOperationQueue_class/) classes. I used them a lot during my previous development and I will continue to use them.
 
-What is an `NSOperation`? A good definition can be found in [NSHipster](http://nshipster.com/nsoperation/):
+So, what is an `NSOperation`? A good definition can be found in [NSHipster](http://nshipster.com/nsoperation/):
 
 >NSOperation represents a single unit of work. It’s an abstract class that offers a useful, thread-safe structure for modeling state, priority, dependencies, and management.
 
 
-So, why using `NSOperation`s? Because you are able to abstract in a very good way a self-contained task your application needs to accomplish.
+And, why use `NSOperation`s? Because you are able to abstract in a very good way a self-contained task your application needs to accomplish.
 
-An `NSOperation` can be described through a finite state machine. The possible state are: pending, ready, executing, finished and cancelled. The relationships among these states can be represented with the following diagram. As you can notice, the finished state is a final one.
+An `NSOperation` can be described through a finite state machine. Possible state are: pending, ready, executing, finished and cancelled. The relationships among these states can be represented with the following diagram. As you can notice, the finished state is a final one.
 
 ![image](/images/blogs/lb-state-machine.png)
 
 There are many ways to create `NSOperation`s: subclassing an `NSOperation`, using `NSInvocationOperation` or creating `NSBlockOperation`. I prefer the subclass way. Why? Because you can create an instance of it and reuse it across all the application.
 
 An `NSOperation` can run in two different flavors: non-asynchronous (or non-concurrent) and asynchronous (or concurrent).
-Before explain the difference between the two, I would highlight that starting from iOS 8 the property `concurrent` has been replaced with the more clear `asynchronous` one. In this manner it is possible to determinate if an `NSOperation` executes synchronously in the main method (see below) or asynchronously.
+Before explaining the difference between the two, I would highlight that starting from iOS 8 the property `concurrent` has been replaced with the more clear `asynchronous` one. In this manner it is possible to determinate if an `NSOperation` executes synchronously in the main method (see below) or asynchronously.
 
 So, what is the difference between a non-asynchronous and an asynchronous operation?
 
@@ -161,9 +161,9 @@ So, for example, if you want to create a download operation you can use the appr
 	}
 
 `NSOperationQueue`s provide a nice way to control the number of concurrent operations that can be run "in parallel". In particular, the developer can set the `maxConcurrentOperationCount` to 1 in order to create a serial queue. At this point each operation will be executed in a FIFO (First In First Out) order.
-In addition to that, you can also control the priority of each operation by using new Quality of Service APIs provided by iOS 8. This a pretty new concept that allows to distinguish four different service levels: user-interactive, user-initiated, utility and background. If you are interested in more details, I suggest to watch **Power, Performance and Diagnostics: What's new in GCD and XPC** talk at **WWDC 2014**.
+In addition to that, you can also control the priority of each operation by using new Quality of Service APIs provided by iOS 8. This a pretty new concept that allows you to distinguish four different service levels: user-interactive, user-initiated, utility and background. If you are interested in more details, I suggest to watch [Power, Performance and Diagnostics: What's new in GCD and XPC](https://developer.apple.com/videos/play/wwdc2014-716/) talk at WWDC 2014.
 
-The concept I like the most when using operations and queues is the one of creating dependencies. They allow to execute operations in a specific order. The way to achieve is done through the `addDependency` method. For example, if we want that a parsing operation should complete only after the download operation has finished its execution, our code should look like the following.
+The concept I like the most when using operations and queues is the one of creating dependencies. They allow you to execute operations in a specific order. The way to achieve this is done through the `addDependency` method. For example, if we want that a parsing operation should complete only after the download operation has finished its execution, our code should look like the following.
 
 	let downloadOperation = // ...
 	let parsingOperation = // ...
@@ -177,4 +177,4 @@ But wait. There is also more. If you need to notify the user interface, for exam
 	[completionOperation addDependency:downloadOperation];
 	[completionOperation addDependency:parsingOperation];
 
-That's all for me! Anyway, if you want to understand more of NSOperations I strongly suggest to watch the **Advanced NSOperations** talk at **WWDC 2015**.
+That's all for me! Anyway, if you want to understand more of NSOperations I strongly suggest to watch the [Advanced NSOperations](https://developer.apple.com/videos/play/wwdc2015-226/) talk at WWDC 2015.
