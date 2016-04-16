@@ -28,7 +28,7 @@ Before explaining the difference between the two, I would highlight that startin
 
 So, what is the difference between a non-asynchronous and an asynchronous operation?
 
-In order to kick-off a non-asynchronous operation, you need to add it to an `NSOperationQueue` (just a data structure that contains all your operations). In the case you have preferred the subclass way, your subclass must override the main method. This method will run your code in a background thread for you. Since `NSOperation` and `NSOperationQueue` are run on top on GCD (Grand Central Dispatch), you don't need to be worried for creating your own threads. An operation is then removed from its current queue if the main method has finished or the operation has been cancelled.
+In order to kick-off a non-asynchronous operation, you need to add it to an `NSOperationQueue` (just a data structure that contains all your operations). In the case you have preferred the subclass way, your subclass must override the main method. This method will run your code in a background thread for you. Since `NSOperation` and `NSOperationQueue` are run on top on GCD (Grand Central Dispatch), you need not create your own threads. An operation is then removed from its current queue if the main method has finished or the operation has been cancelled.
 As a good rule (within the `main` method) of thumb it's important to check the `isCancelled` property in order to verify if the operation has been cancelled or not. In this case, you should be responsible to rollback the state of its execution in a valid state.
 
 A simple non-asynchronous operation subclass can look like the following.
@@ -56,7 +56,7 @@ Such type of operation can be used like the following.
 	queue.addOperation(nonConcurrentOperation)
 
 Using an asynchronous operation, instead, requires more work since in order to kick-off it, you
-need to override the `start` method (without calling the superclass implementation) and manages the state of the operation yourself.
+need to override the `start` method (without calling the superclass implementation) and manage the state of the operation yourself.
 What does it mean? `NSOperation` class is KVC (Key Value Coding) and KVO (Key Value Observing) compliant for several of its properties. Monitoring the ongoing state of your task and reporting changes in that state using KVO notifications allow you to manage in the correct way the state of the operation.
 
 A simple concurrent `NSOperation` can look like the following.
@@ -160,8 +160,8 @@ So, for example, if you want to create a download operation you can use the appr
 	    }
 	}
 
-`NSOperationQueue`s provide a nice way to control the number of concurrent operations that can be run "in parallel". In particular, the developer can set the `maxConcurrentOperationCount` to 1 in order to create a serial queue. At this point each operation will be executed in a FIFO (First In First Out) order.
-In addition to that, you can also control the priority of each operation by using new Quality of Service APIs provided by iOS 8. This a pretty new concept that allows you to distinguish four different service levels: user-interactive, user-initiated, utility and background. If you are interested in more details, I suggest to watch [Power, Performance and Diagnostics: What's new in GCD and XPC](https://developer.apple.com/videos/play/wwdc2014-716/) talk at WWDC 2014.
+`NSOperationQueue` provides a nice way to control the number of concurrent operations that can be run "in parallel". In particular, the developer can set the `maxConcurrentOperationCount` to 1 in order to create a serial queue. At this point each operation will be executed in a FIFO (First In First Out) order.
+In addition to that, you can also control the priority of each operation by using new Quality of Service APIs provided by iOS 8. This a pretty new concept that allows you to distinguish four different service levels: user-interactive, user-initiated, utility and background. If you are interested in more details, I suggest you watch [Power, Performance and Diagnostics: What's new in GCD and XPC](https://developer.apple.com/videos/play/wwdc2014-716/) talk at WWDC 2014.
 
 The concept I like the most when using operations and queues is the one of creating dependencies. They allow you to execute operations in a specific order. The way to achieve this is done through the `addDependency` method. For example, if we want that a parsing operation should complete only after the download operation has finished its execution, our code should look like the following.
 
